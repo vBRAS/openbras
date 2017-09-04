@@ -1,0 +1,10 @@
+#you can use static_libs=1/0 ,to build static lib or dynamiclib
+include $(USER_ROOT)/make/makeinclude/macros.GNU
+MYLIB=openbras
+MYFILES = CDPDKPacketProcess.cpp
+
+MYCPPFLAGS=-I../include -I../utils -std=gnu++11 
+MYLDFLAGS= 
+MYDLLLIB=
+include $(USER_ROOT)/make/makeinclude/allinone.GNU
+
