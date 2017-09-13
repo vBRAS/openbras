@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<starosxml  scope="application">
+	<function name="StartOpenBRASProcess">
+		<parameters>
+			<parameter name="processname" type="string"/>
+			<parameter name="autostart" type="string"/>
+			<parameter name="version" type="string"/>
+			<parameter name="category" type="string"/>
+			<parameter name="origin" type="string"/>
+			<parameter name="title" type="string"/>
+			<parameter name="desc" type="string"/>
+			<parameter name="url" type="string"/>
+			<parameter name="starlangpath" type="string"/>
+		</parameters>
+		<log>StartOpenBRASProcess</log>
+		<variable name="starparams" type="params"/>
+		<set name="starparams" paramname="ProcessName" value="context.processname.toString()"/>
+		<set name="starparams" paramname="AutoRestart" value="context.autostart.toString()"/>
+		<set name="starparams" paramname="Version" value="context.version.toString()"/>
+		<set name="starparams" paramname="Category" value="context.category.toString()"/>
+		<set name="starparams" paramname="Origin" value="context.origin.toString()"/>
+		<set name="starparams" paramname="Title" value="context.title.toString()"/>
+		<set name="starparams" paramname="Desc" value="context.desc.toString()"/>
+		<set name="starparams" paramname="URL" value="context.url.toString()"/>
+		<set name="starparams" paramname="StarlangPath" value="context.starlangpath.toString()"/>
+		<remotecall method="StartProcess" params="context.starparams"/>
+		<wait event="application.PROCESSRUNNOTIFY" timeout="5000">
+		  <function>
+			<log><![CDATA[ Start Process <%=context.processname.toString()%> Success!]]></log>
+			<goto label="SuccessOut"/>
+		  </function>
+		</wait>
+		<log><![CDATA[ Start Process <%=context.processname.toString()%> TimeOut]]></log>
+		<label name="SuccessOut"/>
+	</function>
+	<function name="startopenbrasprocess">
+		<function name="LoadProject">
+			<parameters>
+				<parameter name="strpath" type="string" in="'/opt/yunex.com/openbras/'"/>
+			</parameters>
+		</function>	
+		<function name="StartOpenBRASProcess">
+			<parameters>
+				<parameter name="processname" type="string" in="'OPENBRAS'"/>
+				<parameter name="autostart" type="string" in="'Disable'"/>
+				<parameter name="version" type="string" in="'1.10.0'"/>
+				<parameter name="category" type="string" in="'OpenBRAS'"/>
+				<parameter name="origin" type="string" in="'yunex.com'"/>
+				<parameter name="title" type="string" in="'Default Apps'"/>
+				<parameter name="desc" type="string" in="'Default Apps'"/>
+				<parameter name="url" type="string" in="'http://www.yunex.com'"/>
+				<parameter name="starlangpath" type="string" in="'/opt/yunex.com/openbras/web/openbras.xml'"/>
+			</parameters>
+		</function>	
+	</function>
+</starosxml>

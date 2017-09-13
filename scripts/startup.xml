@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<starosxml  scope="application">
+	<include src="/opt/staros.xyz/dipc/scripts/startprocess.xml"/>
+	<include src="/opt/staros.xyz/starcore/scripts/starcore_process_map.xml"/>
+	<include src="/opt/yunex.com/openbras/scripts/openbras_process_init.xml"/>
+	<variable name="systemparam" type="params"/>
+	<events>
+		<onevent event="bundleapp.startup">
+			<function>
+				<set name="systemparam" paramname="DiscoveryMcastAddr" value="'239.2.2.4'"/>
+				<set name="systemparam" paramname="DiscoveryMcastAddrPort" value="'16016'"/>
+				<set name="systemparam" paramname="DIPCServerIP" value="'127.0.0.1'"/>
+				<set name="systemparam" paramname="DIPCPortInt" value="'44446'"/>
+				<set name="systemparam" paramname="DIPCPortExt" value="'44448'"/>
+				<set name="systemparam" paramname="AutoRestart" value="'Disable'"/>
+				<set name="systemparam" paramname="KeepAliveTimer" value="'60'"/>
+				<set name="systemparam" paramname="ClusterId" value="'1'"/>
+				<set name="systemparam" paramname="DataCenterId" value="'11'"/>
+				<set name="systemparam" paramname="Version" value="'1.5.0'"/>
+				<set name="systemparam" paramname="Category" value="'System'"/>
+				<set name="systemparam" paramname="Origin" value="'StarOS.xyz'"/>
+				<set name="systemparam" paramname="Title" value="'DIPC Service'"/>
+				<set name="systemparam" paramname="Desc" value="'DIPC Service'"/>
+				<set name="systemparam" paramname="URL" value="'http://www.staros.xyz'"/>
+				<remotecall method="StartSystem" params="context.systemparam"/>
+				<function name="startstarcoreprocess"/>
+				<function name="startopenbrasprocess"/>
+				<remotecall method="EndStart" params="context.systemparam"/>
+				<log>    </log>
+				<log>******************************************************************************************</log>
+				<log>*</log>
+				<log>*  Copyright (C) 2016-2017, Nanjing YunEX Technology Co., Ltd</log>
+				<log>*  Welcome to OpenBRAS Server</log>
+				<log>*</log>
+				<log>******************************************************************************************</log>
+			</function>
+		</onevent>
+		<onevent event="~bundleapp.shutdown">
+			<function>
+			</function>
+		</onevent>
+		<onevent event="*">
+			<function>
+			<log level="1"><![CDATA[ invalid event <%=event.getName()%>]]> </log>
+			</function>
+		</onevent>
+	</events>
+</starosxml>

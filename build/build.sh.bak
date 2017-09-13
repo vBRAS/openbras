@@ -26,7 +26,7 @@ function build_rpm() {
 
     mkdir -p $OPENBRAS_RPM_ROOT/{BUILD,RPMS,SOURCES/openbras-$OPENBRAS_RPM_VERSION/opt/yunex.com,SPECS,SRPMS}
 
-    cp -r $OPENBRAS_STAGE $OPENBRAS_RPM_ROOT/SOURCES/openbras-$OPENBRAS_RPM_VERSION/opt/yunex.com/openbras
+    cp -r $OPENBRAS_STAGE $OPENBRAS_RPM_ROOT/SOURCES/openbras-$STAROS_RPM_VERSION/opt/yunex.com/openbras
 
     cd $OPENBRAS_RPM_ROOT/SOURCES
     COPYFILE_DISABLE=1 tar zcf openbras-$OPENBRAS_RPM_VERSION.tar.gz openbras-$OPENBRAS_RPM_VERSION

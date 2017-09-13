@@ -58,11 +58,8 @@ check_dir:
 	@test -d $(PRJDIR)/$(PROJECT_NAME)/docs || mkdir -p $(PRJDIR)/$(PROJECT_NAME)/docs
 	
 #################################################################################
-clean: aceclean
+clean:
 	make -C $(USER_ROOT) -f WFNOSMakefile realclean
 	rm -rf $(TARNAME).tar.bz2
 	rm -rf $(PRJDIR)/$(PROJECT_NAME)
-.PHONY: aceclean
-aceclean:
-	make clean -C $(USER_ROOT)/src/ace
 	

@@ -57,7 +57,7 @@ else
   ifeq ($(findstring k, $(MAKEFLAGS)),k)
     LIBCHECK = 1
   else
-    LIBCHECK ?= $(filter-out $(foreach lib,ACE,$(findstring $(lib),$(foreach libpath,. $(if $(ARCH),./$(ARCH)) ../../../lib $(if $(ARCH),../../../lib/$(ARCH)) $(USER_ROOT)/libs $(USER_ROOT)/src/ace/install/lib /usr/lib /usr/lib64 $(INSLIB),$(wildcard $(libpath)/$(LIB_PREFIX)$(lib).* $(libpath)/$(lib).lib)))),ACE)
+    LIBCHECK ?= $(filter-out $(foreach lib,ACE,$(findstring $(lib),$(foreach libpath,. $(if $(ARCH),./$(ARCH)) ../../../lib $(if $(ARCH),../../../lib/$(ARCH)) $(USER_ROOT)/libs /opt/staros.xyz/stardlls/libs $(USER_ROOT)/src/ace/install/lib /usr/lib /usr/lib64 $(INSLIB),$(wildcard $(libpath)/$(LIB_PREFIX)$(lib).* $(libpath)/$(lib).lib)))),ACE)
     ifeq ($(LIBCHECK),)
       LIBCHECK = 1
     endif
@@ -91,10 +91,42 @@ include $(USER_ROOT)/make/makeinclude/rules.local.GNU
 
 
 LDFLAGS      += -L. $(if $(ARCH),-L./$(ARCH)) -L$(USER_ROOT)/libs\
--L$(ACE_LIB_PATH)
-
+-L/opt/staros.xyz/starcore/libs\
+-L/opt/staros.xyz/stardlls/libs\
+-L/opt/staros.xyz/starlang/libs\
+-L/opt/staros.xyz/protocol/libs\
+-L/opt/staros.xyz/dipc/libs
 CPPFLAGS     += -I$(USER_ROOT)/include\
--I$(ACE_INCLUDE)
+-I$(USER_ROOT)/src/include\
+-I$(USER_ROOT)/src/lib\
+-I$(USER_ROOT)/src\
+-I/opt/staros.xyz/stardlls/include/\
+-I/opt/staros.xyz/stardlls/include/cfgparser\
+-I/opt/staros.xyz/stardlls/include/dispatch\
+-I/opt/staros.xyz/stardlls/include/dpdk\
+-I/opt/staros.xyz/stardlls/include/event2\
+-I/opt/staros.xyz/stardlls/include/expat\
+-I/opt/staros.xyz/stardlls/include/glog\
+-I/opt/staros.xyz/stardlls/include/js\
+-I/opt/staros.xyz/stardlls/include/json\
+-I/opt/staros.xyz/stardlls/include/wocal\
+-I/opt/staros.xyz/stardlls/include/starbase\
+-I/opt/staros.xyz/stardlls/include/wface\
+-I/opt/staros.xyz/stardlls/include/wfdb\
+-I/opt/staros.xyz/stardlls/include/tbb/tbb\
+-I/opt/staros.xyz/stardlls/include/xmlengine\
+-I/opt/staros.xyz/stardlls/include/soap\
+-I/opt/staros.xyz/stardlls/include/java\
+-I/opt/staros.xyz/stardlls/include/java/linux\
+-I/opt/staros.xyz/dipc/include/dipc\
+-I/opt/staros.xyz/starcore/include/starcore\
+-I/opt/staros.xyz/starcore/include/coreutils\
+-I/opt/staros.xyz/starcore/include/karafutils\
+-I/opt/staros.xyz/starlang/include/\
+-I/opt/staros.xyz/protocol/include/shttp\
+-I/opt/staros.xyz/protocol/include/starssh\
+-I/opt/staros.xyz/protocol/include/openflow\
+-I/opt/staros.xyz/protocol/include/packet
 
 LDFLAGS		 += $(MYLDFLAGS)
 CPPFLAGS     += -march=corei7 -DRTE_MACHINE_CPUFLAG_SSE -DRTE_MACHINE_CPUFLAG_SSE2 -DRTE_MACHINE_CPUFLAG_SSE3 -DRTE_MACHINE_CPUFLAG_SSSE3 -DRTE_MACHINE_CPUFLAG_SSE4_1 -DRTE_MACHINE_CPUFLAG_SSE4_2\
@@ -179,8 +211,14 @@ DPDK_DLLS = \
 -lrte_pmd_virtio\
 -lrte_pmd_vmxnet3_uio\
 
-VLDLIBS +=-lm -lrt -lpthread -lutil -ldl -lcrypt \
-	-lACE $(DPDK_DLLS) $(MYDLLLIB)
+VLDLIBS +=-lm -lrt -lpthread -lutil -ldl -lcrypt -lssl -lcrypto -levent \
+	-ltbb -ltbbmalloc -ltbbmalloc_proxy\
+	-ljson -lrtc -lexpat -lglog \
+	-lACE -lz\
+	-ldipc -lstarbase -lwface -lwocal -ldispatch -lcfgparser -lsoap \
+	-lstarlang -lshttp -lsslutils -lstarssh2 -lbotan-2 -lmozjs185 -lpseudotcp\
+	-lwfdb -lfastdb -lopenflow -lpacket -lcoreutils -loam -lsyslog -lsysdb -lstargui -lallconf\
+	-lcoremain $(DPDK_DLLS) $(MYDLLLIB)
 $(VBIN): $(addprefix $(VDIR), $(OBJS)) $(DEPLIBS)
   ifneq (,$(LINK.cc.override))
 	$(LINK.cc.override)
