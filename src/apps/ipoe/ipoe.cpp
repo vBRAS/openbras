@@ -1,111 +1,48 @@
 /***********************************************************************
- * Copyright (c) 2017 The OpenBras project authors. All Rights Reserved.
+    Copyright (c) 2017, The OpenBRAS project authors. All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are
+    met:
+
+    * Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the
+    distribution.
+
+    * Neither the name of OpenBRAS nor the names of its contributors may
+    be used to endorse or promote products derived from this software
+    without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+    LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 **********************************************************************/
 
-#include "CIPOEModule.h"
 #include <stdlib.h>
-#include "iniparser.h"
-
-static bool finished = false;
-
-#ifndef _DEBUG
-#define _DEBUG 1
-#endif
-
-static void signalHandler(int signo)
-{   
-    std::cerr << "Shutting down" << endl;   
-    finished = true;
-#ifdef ACE_WIN32   
-    ::Sleep(1000);
-#else   
-    ::usleep(1000000);
-#endif
-    ACE_Reactor::end_event_loop ();
-}
-
-void InstallSignal()
+#include "dipc.h"
+#include "ICOREMain.h"
+#include "CIPOEProcess.h"
+#include "corejno.h"
+#include "openbrasjno.h"
+int main (int argc, char **argv)
 {
-#ifdef ACE_WIN32
-#else
-
-    if (::signal( SIGPIPE, SIG_IGN) == SIG_ERR)  
-    {      
-        cerr << "Couldn't install signal handler for SIGPIPE" << endl;     
-        exit(-1);  
-    }
-    if (::signal( SIGINT, signalHandler ) == SIG_ERR )   
-    {      
-        cerr << "Couldn't install signal handler for SIGINT" << endl;      
-        exit( -1 );   
-    }   
-    if (::signal( SIGTERM, signalHandler ) == SIG_ERR )   
-    {      
-        cerr << "Couldn't install signal handler for SIGTERM" << endl;      
-        exit( -1 );   
-    }
-#endif
-}
-
-std::string GetDHCPServerIP()
-{
-	std::string strip;
-    dictionary * ini = NULL;
-    char        * s  = NULL;
-
-    ini = iniparser_load("ipoe.cfg");
-    if (ini == NULL) {
-        ACE_DEBUG ((LM_INFO, "GetDHCPServerIP, failed to iniparser_load ipoe.cfg.\n"));
-        return "0.0.0.0" ;
-    }
-    
-    iniparser_dump(ini, stderr);
-
-    s = const_cast<char *>(iniparser_getstring(ini, "IPOE:dhcpserver", NULL));
-	strip = std::string(s, strlen(s));
-    iniparser_freedict(ini);
-    return strip;
-}
-
-int main(int argc, char **argv)
-{
-    InstallSignal();
-    
-#if defined(_DEBUG)
-    ACE::debug (1);
-    ACE_OSTREAM_TYPE *output = new ofstream ("ipoe.log");
-    ACE_LOG_MSG->msg_ostream (output, 1);
-    ACE_LOG_MSG->set_flags (ACE_Log_Msg::OSTREAM|ACE_Log_Msg::VERBOSE);
-    ACE_LOG_MSG->clr_flags (ACE_Log_Msg::STDERR);
-#endif
-
-    ACE_DEBUG ((LM_DEBUG,"Starting IPOE process...\n"));
-
-    ACE_Reactor reactor;
-    ACE_Reactor::instance(&reactor);
-
-    /////////////////
-    CIPOEModule module(&reactor);
-	std::string dhcpserverip = GetDHCPServerIP();
-    if (module.Start(dhcpserverip) == -1)
-    {
-        ACE_DEBUG ((LM_ERROR,"Failed to start IPOE process.\n"));
-        return -1;
-    }
-    ///////////////////////
-
-    while (reactor.reactor_event_loop_done () == 0)
-    {
-        reactor.run_reactor_event_loop ();
-    }
-
-    //delete_reactor();
-    ACE_DEBUG ((LM_INFO,
-                ACE_TEXT ("(%P|%t)  Reactor event loop finished ")
-                ACE_TEXT ("successfully.\n")));
-
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("(%P|%t)  Reactor Main finished\n")));
-
+    COREProcessInit (argc, argv);
+    CIPOEProcess *process = new CIPOEProcess ();
+    COREProcessLoop (process, OPENBRAS_JNO_IPOE);
     return 0;
 }
+
 

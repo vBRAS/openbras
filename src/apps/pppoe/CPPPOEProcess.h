@@ -31,18 +31,38 @@
 
 **********************************************************************/
 
-#include <stdlib.h>
+#ifndef CPPPOEPROCESS_H
+#define CPPPOEPROCESS_H
+#include "CAWACEWrapper.h"
+#include "IStarLang.h"
 #include "dipc.h"
-#include "ICOREMain.h"
-#include "CPPPOEProcess.h"
-#include "corejno.h"
-#include "openbrasjno.h"
-int main (int argc, char **argv)
+#include "ISYSDBManager.h"
+#include "CAWACEWrapper.h"
+#include "CAWIDAllocator.h"
+class CPPPOEProcess : public IDIPCProcessSink,
+                                    public IDIPCAcceptorConnectorSink
 {
-    COREProcessInit (argc, argv);
-    CPPPOEProcess *process = new CPPPOEProcess ();
-    COREProcessLoop (process, OPENBRAS_JNO_PPPOE);
-    return 0;
-}
+public:
+    CPPPOEProcess ();
+    virtual ~CPPPOEProcess ();
 
+    virtual void OnBootOK();
+    virtual void OnProcessUpdateState(const CDIPCProcess &updateprocess);
+
+    virtual void OnProcessRun(int argc, char** argv, IDIPCProcess *dipcProcess);
+    virtual void OnHAProcessConnected(uint32_t nPeerClusterId, 
+                                            uint32_t nPeerDataCenterId, 
+                                            CAWAutoPtr<IDIPCTransport> &transport);
+
+    virtual void OnConnectIndication(
+                CAWResult aReason,
+                IDIPCTransport *aTrpt,
+                IDIPCAcceptorConnectorId *aRequestId);
+
+private:
+    IDIPCProcess *m_dipcProcess;
+    CAWAutoPtr < IDIPCConnector> m_connector;
+	CAWAutoPtr<IDIPCTransport> m_transport;
+};
+#endif //CPPPOEPROCESS_H
 

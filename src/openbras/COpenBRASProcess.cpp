@@ -37,8 +37,10 @@
 #include "json_value.h"
 #include "json_reader.h"
 #include <fstream>
+#include "COpenBRASAppChannel.h"
 COpenBRASProcess::COpenBRASProcess () 
     :m_dipcProcess(NULL)
+    ,m_idbase(0)
 {
     CAW_INFO_TRACE("COpenBRASProcess::COpenBRASProcess");
 }
@@ -149,6 +151,13 @@ void COpenBRASProcess::OnConnectIndication(
     IDIPCTransport *aTrpt,
     IDIPCAcceptorConnectorId *aRequestId)
 {
+    if (aReason==CAW_OK)
+    {
+        uint32_t id = m_idbase++;
+        CAWAutoPtr<IDIPCTransport> ptransport(aTrpt);
+        CAWAutoPtr<COpenBRASAppChannel> temp(new COpenBRASAppChannel(id, ptransport, this));
+        m_apps[id]=temp;
+    }
 }
 
 void COpenBRASProcess::OnHAProcessConnected(uint32_t nPeerClusterId, 
@@ -176,6 +185,11 @@ void COpenBRASProcess::OnParserXMLError(long bundleid, const CAWString &strerror
 }
 void COpenBRASProcess::OnXmlSync(long bundleid, const CAWString &event, const CAWString &strjson)
 {
+}
+CAWResult COpenBRASProcess::RemoveAppChannel(uint32_t id)
+{
+    m_apps.erase(id);
+    return CAW_OK;
 }
 
                                                 

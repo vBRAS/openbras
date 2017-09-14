@@ -28,7 +28,7 @@ all: check_dir $(buidlall)
 	cp -rf $(USER_ROOT)/scripts/* $(PRJDIR)/$(PROJECT_NAME)/scripts/
 	cp -rf $(USER_ROOT)/conf/* $(PRJDIR)/$(PROJECT_NAME)/conf/
 	cp -rf $(USER_ROOT)/LICENSE $(PRJDIR)/$(PROJECT_NAME)/
-	cp -rf $(USER_ROOT)/README $(PRJDIR)/$(PROJECT_NAME)/
+	cp -rf $(USER_ROOT)/README.md $(PRJDIR)/$(PROJECT_NAME)/
 	cp -rf $(USER_ROOT)/AUTHORS $(PRJDIR)/$(PROJECT_NAME)/
 	cp -rf $(USER_ROOT)/resources $(PRJDIR)/$(PROJECT_NAME)/
 	cp -rf $(USER_ROOT)/docs/* $(PRJDIR)/$(PROJECT_NAME)/docs

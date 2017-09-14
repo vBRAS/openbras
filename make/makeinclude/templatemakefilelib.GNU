@@ -80,28 +80,43 @@ include $(USER_ROOT)/make/makeinclude/rules.local.GNU
 LDFLAGS      += -L. $(if $(ARCH),-L./$(ARCH)) -L$(USER_ROOT)/libs\
 -L$(ACE_LIB_PATH)
 
-INCLDIRS += -I$(SRCDIR)/include\
-		-I$(JS_INCLUDE)\
-		-I$(JSON_INCLUDE)\
-		-I$(RTC_INCLUDE)\
-		-I$(ACE_INCLUDE)\
-		-I$(WFACE_INCLUDE)\
-		-I$(WOCAL_INCLUDE)\
-		-I$(SSL_INCLUDE)\
-		-I$(DISPATCH_INCLUDE)\
-		-I$(STARBASE_INCLUDE)\
-		-I$(LIBCLI_INCLUDE)\
-		-I$(CFGPARSER_INCLUDE)\
-		-I$(WFDB_INCLUDE)\
-		-I$(EXPAT_INCLUDE)\
-		-I$(GLOG_INCLUDE)\
-		-I$(EVENT_INCLUDE)\
-		-I$(FASTDB_INCLUDE)\
-		-I/opt/staros.xyz/dipc/include/dipc\
-		-I/opt/staros.xyz/starcore/include/starcore\
-		-I/opt/staros.xyz/starcore/include/coreutils
-CPPFLAGS     += -I$(USER_ROOT)/include $(INCLDIRS)\
--I/opt/staros.xyz/stardlls/include/dpdk
+LDFLAGS      += -L. $(if $(ARCH),-L./$(ARCH)) -L$(USER_ROOT)/libs\
+-L/opt/staros.xyz/starcore/libs\
+-L/opt/staros.xyz/stardlls/libs\
+-L/opt/staros.xyz/starlang/libs\
+-L/opt/staros.xyz/protocol/libs\
+-L/opt/staros.xyz/dipc/libs
+CPPFLAGS     += -I$(USER_ROOT)/include\
+-I$(USER_ROOT)/src/include\
+-I$(USER_ROOT)/src/lib\
+-I$(USER_ROOT)/src\
+-I/opt/staros.xyz/stardlls/include/\
+-I/opt/staros.xyz/stardlls/include/cfgparser\
+-I/opt/staros.xyz/stardlls/include/dispatch\
+-I/opt/staros.xyz/stardlls/include/dpdk\
+-I/opt/staros.xyz/stardlls/include/event2\
+-I/opt/staros.xyz/stardlls/include/expat\
+-I/opt/staros.xyz/stardlls/include/glog\
+-I/opt/staros.xyz/stardlls/include/js\
+-I/opt/staros.xyz/stardlls/include/json\
+-I/opt/staros.xyz/stardlls/include/wocal\
+-I/opt/staros.xyz/stardlls/include/starbase\
+-I/opt/staros.xyz/stardlls/include/wface\
+-I/opt/staros.xyz/stardlls/include/wfdb\
+-I/opt/staros.xyz/stardlls/include/tbb/tbb\
+-I/opt/staros.xyz/stardlls/include/xmlengine\
+-I/opt/staros.xyz/stardlls/include/soap\
+-I/opt/staros.xyz/stardlls/include/java\
+-I/opt/staros.xyz/stardlls/include/java/linux\
+-I/opt/staros.xyz/dipc/include/dipc\
+-I/opt/staros.xyz/starcore/include/starcore\
+-I/opt/staros.xyz/starcore/include/coreutils\
+-I/opt/staros.xyz/starcore/include/karafutils\
+-I/opt/staros.xyz/starlang/include/\
+-I/opt/staros.xyz/protocol/include/shttp\
+-I/opt/staros.xyz/protocol/include/starssh\
+-I/opt/staros.xyz/protocol/include/openflow\
+-I/opt/staros.xyz/protocol/include/packet
 
 ifeq ($(shared_libs),1)
   ifneq ($(SHLIB),)

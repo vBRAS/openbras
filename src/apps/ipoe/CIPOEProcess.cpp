@@ -31,53 +31,64 @@
 
 **********************************************************************/
 
-#ifndef COPENBRASPROCESS_H
-#define COPENBRASPROCESS_H
-#include "CAWACEWrapper.h"
-#include "IStarLang.h"
-#include "dipc.h"
-#include "ISYSDBManager.h"
-#include "CAWACEWrapper.h"
-#include "CAWIDAllocator.h"
-class COpenBRASProcess : public IDIPCProcessSink,
-                                    public IStarLangSink,
-                                    public IDIPCAcceptorConnectorSink
+#include "CIPOEProcess.h"
+#include "CAWByteStream.h"
+#include "json_features.h"
+#include "json_value.h"
+#include "json_reader.h"
+#include <fstream>
+#include "openbraspdu.h"
+CIPOEProcess::CIPOEProcess () 
+    :m_dipcProcess(NULL)
 {
-public:
-    COpenBRASProcess ();
-    virtual ~COpenBRASProcess ();
+    CAW_INFO_TRACE("CIPOEProcess::CIPOEProcess");
+}
 
-    virtual void OnBootOK();
-    virtual void OnProcessUpdateState(const CDIPCProcess &updateprocess);
+CIPOEProcess::~CIPOEProcess () 
+{
+    CAW_INFO_TRACE("CIPOEProcess::~CIPOEProcess");
+}
 
-    virtual void OnProcessRun(int argc, char** argv, IDIPCProcess *dipcProcess);
-    virtual void OnHAProcessConnected(uint32_t nPeerClusterId, 
+void CIPOEProcess::OnBootOK (void) {
+    CAW_INFO_TRACE("CIPOEProcess::OnBootOK");
+}
+void CIPOEProcess::OnProcessUpdateState(const CDIPCProcess &updateprocess)
+{
+
+}
+
+void CIPOEProcess::OnProcessRun (int argc, char** argv, IDIPCProcess *dipcProcess) {
+    CAW_INFO_TRACE("CIPOEProcess::OnProcessRun");
+    m_dipcProcess = dipcProcess;
+    dipcProcess->CreateClient(m_connector);
+    if (m_connector)
+    {
+        m_connector->AsycConnect(this, OPENBRAS_JNO_OPENBRAS, 1);
+    }
+
+    if (m_dipcProcess)
+    {
+        m_dipcProcess->ProcessRunFinishNotify();
+    }
+}
+
+
+void CIPOEProcess::OnConnectIndication(
+    CAWResult aReason,
+    IDIPCTransport *aTrpt,
+    IDIPCAcceptorConnectorId *aRequestId)
+{
+    if (aReason==CAW_OK)
+    {
+        m_transport = CAWAutoPtr<IDIPCTransport>(aTrpt);
+    }
+
+}
+
+void CIPOEProcess::OnHAProcessConnected(uint32_t nPeerClusterId, 
                                             uint32_t nPeerDataCenterId, 
-                                            CAWAutoPtr<IDIPCTransport> &transport);
-    void StartServer (IDIPCProcess *dipcProcess);
+                                                CAWAutoPtr<IDIPCTransport> &transport) 
+{
 
-    //IStarLangSink
-    virtual void OnXMLLocalCall(long bundleid, 
-                            const CAWString &method, 
-                            const CAWString &injson,
-                            CAWString &outjson);
-
-    virtual void OnXMLRemoteCall(long bundleid, 
-                                const CAWString & method,
-                                XMLParams &params,
-                                CAWMessageBlock &pmsgblock);
-
-    virtual void OnParserXMLError(long bundleid, const CAWString &strerror);
-    virtual void OnXmlSync(long bundleid, const CAWString &event, const CAWString &strjson);
-
-    virtual void OnConnectIndication(
-                CAWResult aReason,
-                IDIPCTransport *aTrpt,
-                IDIPCAcceptorConnectorId *aRequestId);
-
-private:
-    IDIPCProcess *m_dipcProcess;
-    CAWAutoPtr < IDIPCAcceptor> m_acceptor;
-};
-#endif //COPENBRASPROCESS_H
-
+}
+                                              

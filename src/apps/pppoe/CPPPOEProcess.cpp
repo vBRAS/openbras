@@ -31,18 +31,64 @@
 
 **********************************************************************/
 
-#include <stdlib.h>
-#include "dipc.h"
-#include "ICOREMain.h"
 #include "CPPPOEProcess.h"
-#include "corejno.h"
-#include "openbrasjno.h"
-int main (int argc, char **argv)
+#include "CAWByteStream.h"
+#include "json_features.h"
+#include "json_value.h"
+#include "json_reader.h"
+#include "openbraspdu.h"
+#include <fstream>
+CPPPOEProcess::CPPPOEProcess () 
+    :m_dipcProcess(NULL)
 {
-    COREProcessInit (argc, argv);
-    CPPPOEProcess *process = new CPPPOEProcess ();
-    COREProcessLoop (process, OPENBRAS_JNO_PPPOE);
-    return 0;
+    CAW_INFO_TRACE("CPPPOEProcess::CPPPOEProcess");
+}
+
+CPPPOEProcess::~CPPPOEProcess () 
+{
+    CAW_INFO_TRACE("CPPPOEProcess::~CPPPOEProcess");
+}
+
+void CPPPOEProcess::OnBootOK (void) {
+    CAW_INFO_TRACE("CPPPOEProcess::OnBootOK");
+}
+void CPPPOEProcess::OnProcessUpdateState(const CDIPCProcess &updateprocess)
+{
+
+}
+
+void CPPPOEProcess::OnProcessRun (int argc, char** argv, IDIPCProcess *dipcProcess) {
+    CAW_INFO_TRACE("CPPPOEProcess::OnProcessRun");
+    m_dipcProcess = dipcProcess;
+
+	dipcProcess->CreateClient(m_connector);
+    if (m_connector)
+    {
+        m_connector->AsycConnect(this, OPENBRAS_JNO_OPENBRAS, 1);
+    }
+    if (m_dipcProcess)
+    {
+        m_dipcProcess->ProcessRunFinishNotify();
+    }
 }
 
 
+void CPPPOEProcess::OnConnectIndication(
+    CAWResult aReason,
+    IDIPCTransport *aTrpt,
+    IDIPCAcceptorConnectorId *aRequestId)
+{
+    
+    if (aReason==CAW_OK)
+    {
+        m_transport = CAWAutoPtr<IDIPCTransport>(aTrpt);
+    }
+}
+
+void CPPPOEProcess::OnHAProcessConnected(uint32_t nPeerClusterId, 
+                                            uint32_t nPeerDataCenterId, 
+                                                CAWAutoPtr<IDIPCTransport> &transport) 
+{
+
+}
+                                          
