@@ -38,6 +38,7 @@
 #include "ISYSDBManager.h"
 #include "CAWACEWrapper.h"
 #include "CAWIDAllocator.h"
+#include "openbrasjno.h"
 class CIPOEProcess : public IDIPCProcessSink,
                                     public IDIPCAcceptorConnectorSink
 {

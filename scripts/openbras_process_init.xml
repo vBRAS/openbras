@@ -52,5 +52,31 @@
 				<parameter name="starlangpath" type="string" in="'/opt/yunex.com/openbras/web/openbras.xml'"/>
 			</parameters>
 		</function>	
+		<function name="StartOpenBRASProcess">
+			<parameters>
+				<parameter name="processname" type="string" in="'PPPOE'"/>
+				<parameter name="autostart" type="string" in="'Disable'"/>
+				<parameter name="version" type="string" in="'1.10.0'"/>
+				<parameter name="category" type="string" in="'OpenBRAS'"/>
+				<parameter name="origin" type="string" in="'yunex.com'"/>
+				<parameter name="title" type="string" in="'Default Apps'"/>
+				<parameter name="desc" type="string" in="'Default Apps'"/>
+				<parameter name="url" type="string" in="'http://www.yunex.com'"/>
+				<parameter name="starlangpath" type="string" in="'/opt/yunex.com/openbras/web/openbras.xml'"/>
+			</parameters>
+		</function>	
+		<function name="StartOpenBRASProcess">
+			<parameters>
+				<parameter name="processname" type="string" in="'IPOE'"/>
+				<parameter name="autostart" type="string" in="'Disable'"/>
+				<parameter name="version" type="string" in="'1.10.0'"/>
+				<parameter name="category" type="string" in="'OpenBRAS'"/>
+				<parameter name="origin" type="string" in="'yunex.com'"/>
+				<parameter name="title" type="string" in="'Default Apps'"/>
+				<parameter name="desc" type="string" in="'Default Apps'"/>
+				<parameter name="url" type="string" in="'http://www.yunex.com'"/>
+				<parameter name="starlangpath" type="string" in="'/opt/yunex.com/openbras/web/openbras.xml'"/>
+			</parameters>
+		</function>	
 	</function>
 </starosxml>

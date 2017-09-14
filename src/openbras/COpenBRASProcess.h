@@ -39,7 +39,7 @@
 #include "ISYSDBManager.h"
 #include "CAWACEWrapper.h"
 #include "CAWIDAllocator.h"
-
+#include "openbrasjno.h"
 class COpenBRASAppChannel;
 class COpenBRASProcess : public IDIPCProcessSink,
                                     public IStarLangSink,
